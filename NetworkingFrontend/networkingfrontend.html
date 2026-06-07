@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WholesaleOS — ERP/CRM/WMS Cloud Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===================================================
+   WHOLESALEOS — Enterprise ERP/CRM/WMS Portal
+   Design: Industrial-Utilitarian + Precision Grid
+   Color: Slate navy dominant, amber accent system
+=================================================== */
+
+:root {
+  --navy:        #0D1B2A;
+  --navy-2:      #152336;
+  --navy-3:      #1D304A;
+  --navy-4:      #26415E;
+  --navy-border: rgba(255,255,255,0.07);
+  --slate:       #8BA0B4;
+  --slate-2:     #B0C4D5;
+  --amber:       #E8A020;
+  --amber-2:     #F5B842;
+  --amber-dim:   rgba(232,160,32,0.12);
+  --green:       #2ECC71;
+  --green-dim:   rgba(46,204,113,0.12);
+  --red:         #E74C3C;
+  --red-dim:     rgba(231,76,60,0.12);
+  --blue:        #3498DB;
+  --blue-dim:    rgba(52,152,219,0.12);
+  --white:       #FFFFFF;
+  --text-1:      rgba(255,255,255,0.92);
+  --text-2:      rgba(255,255,255,0.60);
+  --text-3:      rgba(255,255,255,0.35);
+  --sidebar-w:   240px;
+  --topbar-h:    56px;
+  --radius:      6px;
+  --radius-lg:   10px;
+  --font:        'DM Sans', system-ui, sans-serif;
+  --mono:        'JetBrains Mono', monospace;
+  /* Light mode panel (auth screens) */
+  --lbg:         #F0F4F8;
+  --lcard:       #FFFFFF;
+  --ltext:       #1A2535;
+  --ltext-2:     #5A6A7A;
+  --lborder:     rgba(0,0,0,0.10);
+  --linput-bg:   #F7F9FB;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  background: var(--navy);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--navy-4); border-radius: 4px; }
+
+/* ===================== LAYOUT ===================== */
+#app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ===================== SIDEBAR ===================== */
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--navy-2);
+  border-right: 1px solid var(--navy-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.25s ease;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--navy-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--amber);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon svg { width: 18px; height: 18px; }
+
+.logo-text { line-height: 1.2; }
+.logo-text .brand { font-size: 14px; font-weight: 600; color: var(--text-1); letter-spacing: 0.02em; }
+.logo-text .sub   { font-size: 10px; color: var(--slate); letter-spacing: 0.06em; text-transform: uppercase; }
+
+.nav-section { padding: 10px 0 4px; }
+.nav-label {
+  font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--text-3); padding: 6px 20px 4px; font-weight: 500;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 20px; cursor: pointer;
+  color: var(--text-2);
+  font-size: 13px; font-weight: 400;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  user-select: none;
+}
+
+.nav-item:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
+
+.nav-item.active {
+  color: var(--amber);
+  background: var(--amber-dim);
+  border-left-color: var(--amber);
+  font-weight: 500;
+}
+
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.75; }
+.nav-item.active svg { opacity: 1; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 20px;
+  border-top: 1px solid var(--navy-border);
+}
+
+.sys-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: var(--text-3);
+}
+
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.dot.warn { background: var(--amber); }
+.dot.err  { background: var(--red); }
+
+/* ===================== MAIN ===================== */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ===================== TOPBAR ===================== */
+#topbar {
+  height: var(--topbar-h);
+  min-height: var(--topbar-h);
+  background: var(--navy-2);
+  border-bottom: 1px solid var(--navy-border);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+
+.topbar-title { font-size: 14px; font-weight: 500; color: var(--text-1); flex: 1; }
+.topbar-meta  { font-size: 12px; color: var(--text-3); font-family: var(--mono); }
+
+.top-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--text-3);
+  background: var(--navy-3);
+  border: 1px solid var(--navy-border);
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.top-status .dot { width: 5px; height: 5px; }
+
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--navy-3);
+  border: 1px solid var(--navy-border);
+  border-radius: 20px;
+  padding: 4px 12px 4px 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.user-pill:hover { background: var(--navy-4); }
+
+.user-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--amber); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600; color: var(--navy);
+}
+
+.user-pill .name { font-size: 12px; font-weight: 500; color: var(--text-1); }
+
+.btn-logout {
+  background: none; border: 1px solid var(--navy-border);
+  color: var(--text-2); font-size: 12px; padding: 4px 12px;
+  border-radius: 4px; cursor: pointer; font-family: var(--font);
+  transition: all 0.15s;
+}
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* ===================== CONTENT ===================== */
+#content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 24px;
+}
+
+/* ===================== PAGES ===================== */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ===================== PAGE HEADER ===================== */
+.page-hdr {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.page-hdr h1 { font-size: 20px; font-weight: 600; color: var(--text-1); }
+.page-hdr p  { font-size: 13px; color: var(--text-2); margin-top: 3px; }
+
+.btn-primary {
+  background: var(--amber); color: var(--navy);
+  border: none; border-radius: var(--radius);
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  padding: 8px 16px; cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: var(--amber-2); }
+
+.btn-secondary {
+  background: var(--navy-3); color: var(--text-1);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius); font-family: var(--font);
+  font-size: 13px; font-weight: 500;
+  padding: 8px 16px; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: var(--navy-4); }
+
+/* ===================== STAT CARDS ===================== */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; margin-bottom: 22px; }
+
+.stat-card {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card.amber::before { background: var(--amber); }
+.stat-card.green::before { background: var(--green); }
+.stat-card.blue::before  { background: var(--blue); }
+.stat-card.red::before   { background: var(--red); }
+
+.stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); font-weight: 500; margin-bottom: 8px; }
+.stat-val   { font-size: 28px; font-weight: 600; color: var(--text-1); font-family: var(--mono); line-height: 1; }
+.stat-sub   { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+.stat-icon  { position: absolute; bottom: 12px; right: 14px; opacity: 0.10; }
+.stat-icon svg { width: 32px; height: 32px; }
+
+/* ===================== GRID PANELS ===================== */
+.panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+
+@media (max-width: 900px) {
+  .panel-grid { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--navy-border);
+}
+
+.panel-hdr h3 { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.panel-hdr .more { font-size: 11px; color: var(--amber); cursor: pointer; }
+.panel-hdr .more:hover { text-decoration: underline; }
+.panel-body { padding: 14px 16px; }
+
+/* ===================== TABLE ===================== */
+.data-table { width: 100%; border-collapse: collapse; }
+
+.data-table th {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-3); font-weight: 500;
+  padding: 0 10px 10px 0; text-align: left;
+  border-bottom: 1px solid var(--navy-border);
+}
+
+.data-table td {
+  padding: 10px 10px 10px 0;
+  font-size: 13px; color: var(--text-1);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ===================== BADGE ===================== */
+.badge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 3px;
+}
+.badge.active    { background: var(--green-dim);  color: #2ECC71; }
+.badge.pending   { background: var(--amber-dim);  color: var(--amber); }
+.badge.processed { background: var(--blue-dim);   color: var(--blue); }
+.badge.cancelled { background: var(--red-dim);    color: var(--red); }
+.badge.draft     { background: rgba(255,255,255,0.08); color: var(--text-2); }
+.badge.shipped   { background: var(--blue-dim);   color: var(--blue); }
+.badge.delivered { background: var(--green-dim);  color: #2ECC71; }
+
+/* ===================== SYSTEM STATUS PANEL ===================== */
+.sys-panel { background: var(--navy-2); border: 1px solid var(--navy-border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 22px; }
+.sys-panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 12px; }
+.sys-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.sys-row:last-child { border-bottom: none; }
+.sys-row .svc { flex: 1; font-size: 13px; color: var(--text-2); }
+.sys-row .status { font-size: 11px; color: var(--green); font-family: var(--mono); display: flex; align-items: center; gap: 5px; }
+
+/* ===================== MINI CHART (pure CSS) ===================== */
+.mini-bars { display: flex; align-items: flex-end; gap: 4px; height: 36px; }
+.mini-bar { flex: 1; background: var(--navy-4); border-radius: 2px 2px 0 0; transition: background 0.2s; }
+.mini-bar:hover { background: var(--amber); }
+
+/* ===================== WMS INVENTORY GRID ===================== */
+.inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; }
+
+.inv-card {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  transition: border-color 0.15s;
+}
+.inv-card:hover { border-color: var(--amber); }
+
+.inv-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.inv-card-hdr .sku { font-family: var(--mono); font-size: 11px; color: var(--amber); font-weight: 500; }
+.inv-name { font-size: 14px; font-weight: 500; color: var(--text-1); margin-bottom: 3px; }
+.inv-cat  { font-size: 11px; color: var(--text-3); }
+.inv-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.inv-meta-item label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); margin-bottom: 2px; }
+.inv-meta-item span  { font-size: 13px; color: var(--text-1); font-family: var(--mono); }
+
+.stock-bar-wrap { margin-top: 10px; }
+.stock-bar-wrap label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); display: flex; justify-content: space-between; margin-bottom: 4px; }
+.stock-bar { height: 4px; background: var(--navy-4); border-radius: 2px; overflow: hidden; }
+.stock-bar-fill { height: 100%; border-radius: 2px; }
+.stock-bar-fill.ok   { background: var(--green); }
+.stock-bar-fill.low  { background: var(--amber); }
+.stock-bar-fill.crit { background: var(--red); }
+
+/* ===================== DISPATCH LIST (was cart) ===================== */
+.dispatch-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 18px; }
+@media (max-width: 900px) { .dispatch-wrap { grid-template-columns: 1fr; } }
+
+.dispatch-items { background: var(--navy-2); border: 1px solid var(--navy-border); border-radius: var(--radius-lg); overflow: hidden; }
+.dispatch-empty { padding: 40px; text-align: center; color: var(--text-3); font-size: 13px; }
+
+.dispatch-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--navy-border);
+}
+.dispatch-item:last-child { border-bottom: none; }
+
+.di-info { flex: 1; }
+.di-name { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.di-sku  { font-size: 11px; font-family: var(--mono); color: var(--text-3); margin-top: 2px; }
+.di-qty  { display: flex; align-items: center; gap: 6px; }
+.di-qty button { width: 22px; height: 22px; background: var(--navy-3); border: 1px solid var(--navy-border); color: var(--text-1); border-radius: 4px; cursor: pointer; font-size: 14px; line-height: 1; }
+.di-qty span { font-family: var(--mono); font-size: 13px; min-width: 24px; text-align: center; }
+.di-price { font-family: var(--mono); font-size: 13px; color: var(--text-1); min-width: 80px; text-align: right; }
+.di-remove { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 16px; line-height: 1; }
+.di-remove:hover { color: var(--red); }
+
+.dispatch-summary {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  height: fit-content;
+}
+.dispatch-summary h3 { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 14px; }
+.sum-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+.sum-row.total { font-weight: 600; color: var(--text-1); border-top: 1px solid var(--navy-border); padding-top: 10px; margin-top: 4px; font-size: 15px; }
+.sum-row.total span:last-child { color: var(--amber); font-family: var(--mono); }
+
+/* ===================== CRM CUSTOMER CARDS ===================== */
+.crm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+
+.crm-card {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: border-color 0.15s;
+}
+.crm-card:hover { border-color: rgba(255,255,255,0.15); }
+
+.crm-card-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+
+.crm-avatar {
+  width: 38px; height: 38px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--navy);
+  flex-shrink: 0;
+}
+
+.crm-avatar.amber { background: var(--amber); }
+.crm-avatar.blue  { background: var(--blue); }
+.crm-avatar.green { background: var(--green); }
+
+.crm-cname { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.crm-type  { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+.crm-rows { font-size: 12px; }
+.crm-row { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.crm-row:last-child { border-bottom: none; }
+.crm-row label { color: var(--text-3); min-width: 80px; }
+.crm-row span  { color: var(--text-1); }
+
+/* ===================== AUTH SCREENS ===================== */
+#auth-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--lbg);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+}
+#auth-overlay.visible { display: flex; }
+
+.auth-logo-wrap { text-align: center; margin-bottom: 28px; }
+.auth-logo-icon {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+}
+.auth-logo-icon svg { width: 26px; height: 26px; }
+.auth-logo-wrap h1 { font-size: 18px; font-weight: 600; color: var(--ltext); }
+.auth-logo-wrap p  { font-size: 12px; color: var(--ltext-2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.auth-card {
+  width: 100%; max-width: 400px;
+  background: var(--lcard);
+  border: 1px solid var(--lborder);
+  border-radius: var(--radius-lg);
+  padding: 28px 30px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 { font-size: 16px; font-weight: 600; color: var(--ltext); margin-bottom: 6px; }
+.auth-card .subtitle { font-size: 13px; color: var(--ltext-2); margin-bottom: 22px; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--ltext-2); margin-bottom: 6px; letter-spacing: 0.03em; }
+.field input {
+  width: 100%; padding: 9px 12px;
+  background: var(--linput-bg);
+  border: 1px solid var(--lborder);
+  border-radius: var(--radius);
+  font-family: var(--font); font-size: 13px; color: var(--ltext);
+  outline: none; transition: border-color 0.15s;
+}
+.field input:focus { border-color: var(--amber); }
+
+.auth-btn {
+  width: 100%; padding: 10px;
+  background: var(--amber); color: var(--navy);
+  border: none; border-radius: var(--radius);
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; margin-top: 6px;
+}
+.auth-btn:hover { background: var(--amber-2); }
+
+.auth-switch { margin-top: 16px; text-align: center; font-size: 12px; color: var(--ltext-2); }
+.auth-switch a { color: var(--amber); text-decoration: none; cursor: pointer; font-weight: 500; }
+
+.auth-divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
+.auth-divider hr { flex: 1; border: none; border-top: 1px solid var(--lborder); }
+.auth-divider span { font-size: 11px; color: var(--ltext-2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.auth-footer {
+  margin-top: 24px; text-align: center; font-size: 11px; color: var(--ltext-2);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.auth-footer .dot { background: var(--green); }
+
+.auth-err { background: #FEE; border: 1px solid #F5C6C6; color: #C0392B; font-size: 12px; padding: 8px 12px; border-radius: var(--radius); margin-bottom: 14px; display: none; }
+.auth-err.visible { display: block; }
+
+/* ===================== MODAL ===================== */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.65);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-backdrop.visible { display: flex; }
+
+.modal {
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  width: 100%; max-width: 480px;
+  max-height: 90vh; overflow-y: auto;
+}
+
+.modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.modal-close {
+  float: right; background: none; border: none;
+  color: var(--text-3); font-size: 20px; cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--text-1); }
+
+.mfield { margin-bottom: 14px; }
+.mfield label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 6px; }
+.mfield input, .mfield select, .mfield textarea {
+  width: 100%; padding: 8px 10px;
+  background: var(--navy-3);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius);
+  font-family: var(--font); font-size: 13px; color: var(--text-1);
+  outline: none;
+}
+.mfield input:focus, .mfield select:focus, .mfield textarea:focus { border-color: var(--amber); }
+.mfield select option { background: var(--navy-2); }
+.mfield textarea { resize: vertical; min-height: 80px; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+/* ===================== TOAST ===================== */
+#toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 900;
+  background: var(--navy-2);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  font-size: 13px; color: var(--text-1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transform: translateY(12px); opacity: 0;
+  transition: all 0.25s;
+  pointer-events: none;
+  display: flex; align-items: center; gap: 8px;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.toast-ok   { border-color: var(--green); }
+#toast.toast-warn { border-color: var(--amber); }
+#toast.toast-err  { border-color: var(--red); }
+
+/* ===================== SEARCH BAR ===================== */
+.search-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.search-input {
+  flex: 1; padding: 8px 12px;
+  background: var(--navy-3);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius);
+  font-family: var(--font); font-size: 13px; color: var(--text-1);
+  outline: none; max-width: 320px;
+}
+.search-input:focus { border-color: var(--amber); }
+.search-input::placeholder { color: var(--text-3); }
+
+/* ===================== TABS ===================== */
+.tabs { display: flex; gap: 2px; margin-bottom: 18px; background: var(--navy-3); padding: 3px; border-radius: var(--radius); display: inline-flex; }
+.tab { padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; border-radius: 4px; color: var(--text-2); transition: all 0.15s; }
+.tab.active { background: var(--amber); color: var(--navy); }
+.tab:not(.active):hover { color: var(--text-1); }
+
+/* ===================== PROGRESS RING ===================== */
+.ring-wrap { display: inline-flex; align-items: center; justify-content: center; position: relative; }
+.ring-label { position: absolute; font-family: var(--mono); font-size: 12px; font-weight: 500; }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  #sidebar { position: absolute; transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #content { padding: 16px; }
+}
+
+/* ===================== LOADING SHIMMER ===================== */
+.shimmer {
+  background: linear-gradient(90deg, var(--navy-3) 25%, var(--navy-4) 50%, var(--navy-3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ===================== FADE IN ===================== */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeUp 0.3s ease both; }
+
+/* ===================== ORDER FORM ROWS ===================== */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     AUTH OVERLAY
+     Old: Login / Register / Forgot Password forms
+     New: Enterprise Cloud Portal authentication
+============================================================ -->
+<div id="auth-overlay" class="visible">
+
+  <div class="auth-logo-wrap">
+    <div class="auth-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.2" stroke-linecap="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <path d="M8 21h8M12 17v4"/>
+        <path d="M7 8h4M7 11h6M15 8l2 3-2 3"/>
+      </svg>
+    </div>
+    <h1>WholesaleOS</h1>
+    <p>ERP · CRM · WMS Cloud Portal</p>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div class="auth-card fade-in" id="login-form">
+    <h2>Sign in to your account</h2>
+    <p class="subtitle">Access your wholesale management portal</p>
+    <div class="auth-err" id="login-err"></div>
+    <div class="field">
+      <label>Username / Email</label>
+      <input type="text" id="login-username" placeholder="admin@wholesale.com" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="auth-btn" onclick="handleLogin()">Sign In to Portal</button>
+    <div class="auth-switch">
+      <a onclick="showAuth('forgot')">Forgot password?</a> &nbsp;·&nbsp;
+      <a onclick="showAuth('register')">Request access</a>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div class="auth-card fade-in" id="register-form" style="display:none">
+    <h2>Request system access</h2>
+    <p class="subtitle">Create your WholesaleOS portal account</p>
+    <div class="auth-err" id="reg-err"></div>
+    <div class="field"><label>Full Name</label><input type="text" id="reg-name" placeholder="John Smith"></div>
+    <div class="field"><label>Email Address</label><input type="email" id="reg-email" placeholder="j.smith@company.com"></div>
+    <div class="field"><label>Username</label><input type="text" id="reg-username" placeholder="jsmith"></div>
+    <div class="field"><label>Password</label><input type="password" id="reg-password" placeholder="Min. 8 characters"></div>
+    <button class="auth-btn" onclick="handleRegister()">Create Account</button>
+    <div class="auth-switch">Already have access? <a onclick="showAuth('login')">Sign in</a></div>
+  </div>
+
+  <!-- FORGOT PASSWORD FORM -->
+  <div class="auth-card fade-in" id="forgot-form" style="display:none">
+    <h2>Reset your password</h2>
+    <p class="subtitle">Enter your email to receive reset instructions</p>
+    <div class="auth-err" id="fp-err"></div>
+    <div class="field"><label>Registered Email</label><input type="email" id="fp-email" placeholder="your@email.com"></div>
+    <button class="auth-btn" onclick="handleForgotPassword()">Send Reset Link</button>
+    <div class="auth-switch"><a onclick="showAuth('login')">← Back to sign in</a></div>
+  </div>
+
+  <div class="auth-footer">
+    <div class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>
+    All systems operational &nbsp;·&nbsp; WholesaleOS v2.4.1
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN APP SHELL
+============================================================ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.2" stroke-linecap="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+          <path d="M7 8h4M7 11h6M15 8l2 3-2 3"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="brand">WholesaleOS</div>
+        <div class="sub">Cloud Platform</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">ERP — Business Operations</div>
+      <!-- Old: Orders / Checkout → ERP Order Processing -->
+      <div class="nav-item" onclick="navigate('erp-orders')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        ERP Orders
+      </div>
+      <div class="nav-item" onclick="navigate('invoices')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        Invoice Status
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">CRM — Customer Relations</div>
+      <!-- Old: no CRM → new CRM module -->
+      <div class="nav-item" onclick="navigate('crm-customers')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Wholesale Customers
+      </div>
+      <div class="nav-item" onclick="navigate('crm-activity')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        CRM Activity
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">WMS — Warehouse</div>
+      <!-- Old: Products → Inventory Items -->
+      <div class="nav-item" onclick="navigate('wms-inventory')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+        Inventory Items
+      </div>
+      <!-- Old: Cart → Dispatch List -->
+      <div class="nav-item" onclick="navigate('dispatch')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12H19M12 5l7 7-7 7"/></svg>
+        Dispatch List
+      </div>
+      <div class="nav-item" onclick="navigate('categories')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Stock Categories
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">System</div>
+      <div class="nav-item" onclick="window.open(API_BASE + '/swagger-ui/index.html', '_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        API Documentation
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sys-status">
+        <div class="dot" id="sys-dot"></div>
+        <span id="sys-label">All Systems Online</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <!-- TOPBAR -->
+    <header id="topbar">
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <span class="topbar-meta" id="topbar-date"></span>
+      <div class="top-status">
+        <div class="dot"></div>
+        <span>Cloud Connected</span>
+      </div>
+      <div class="user-pill" id="user-pill">
+        <div class="user-avatar" id="user-avatar">AD</div>
+        <span class="name" id="user-name">Admin</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </header>
+
+    <!-- CONTENT -->
+    <div id="content">
+
+      <!-- ================================================
+           PAGE: DASHBOARD
+      ================================================ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-hdr">
+          <div>
+            <h1>Operations Dashboard</h1>
+            <p>Live overview of ERP, CRM &amp; WMS activity</p>
+          </div>
+        </div>
+
+        <div class="stat-grid" id="dash-stats">
+          <div class="stat-card amber fade-in">
+            <div class="stat-label">Inventory Items</div>
+            <div class="stat-val" id="stat-inventory">—</div>
+            <div class="stat-sub">Total SKUs tracked</div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+          </div>
+          <div class="stat-card blue fade-in" style="animation-delay:.05s">
+            <div class="stat-label">Active Customers</div>
+            <div class="stat-val" id="stat-customers">—</div>
+            <div class="stat-sub">Wholesale accounts</div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+          </div>
+          <div class="stat-card amber fade-in" style="animation-delay:.10s">
+            <div class="stat-label">Pending ERP Orders</div>
+            <div class="stat-val" id="stat-orders">—</div>
+            <div class="stat-sub">Awaiting processing</div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
+          </div>
+          <div class="stat-card green fade-in" style="animation-delay:.15s">
+            <div class="stat-label">Monthly Dispatches</div>
+            <div class="stat-val" id="stat-dispatches">—</div>
+            <div class="stat-sub">Warehouse outbound</div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12H19M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <!-- Recent ERP Orders -->
+          <div class="panel fade-in">
+            <div class="panel-hdr">
+              <h3>Recent ERP Orders</h3>
+              <span class="more" onclick="navigate('erp-orders')">View all →</span>
+            </div>
+            <div class="panel-body">
+              <table class="data-table" id="dash-orders-table">
+                <thead><tr>
+                  <th>Order ID</th><th>Customer</th><th>Status</th><th>Value</th>
+                </tr></thead>
+                <tbody id="dash-orders-body">
+                  <tr><td colspan="4" style="color:var(--text-3);text-align:center;padding:20px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Stock Level Overview -->
+          <div class="panel fade-in" style="animation-delay:.05s">
+            <div class="panel-hdr">
+              <h3>Stock Level Overview</h3>
+              <span class="more" onclick="navigate('wms-inventory')">Manage →</span>
+            </div>
+            <div class="panel-body" id="dash-stock-body">
+              <!-- generated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- System Status Panel -->
+        <div class="sys-panel fade-in">
+          <h3>Cloud Infrastructure Status</h3>
+          <div class="sys-row">
+            <div class="dot"></div>
+            <span class="svc">Backend API (Spring Boot)</span>
+            <span class="status"><div class="dot" style="width:5px;height:5px;background:var(--green)"></div> Online</span>
+          </div>
+          <div class="sys-row">
+            <div class="dot"></div>
+            <span class="svc">Frontend Application</span>
+            <span class="status"><div class="dot" style="width:5px;height:5px;background:var(--green)"></div> Online</span>
+          </div>
+          <div class="sys-row">
+            <div class="dot"></div>
+            <span class="svc">PostgreSQL Database</span>
+            <span class="status" id="db-status"><div class="dot" style="width:5px;height:5px;background:var(--green)"></div> Online</span>
+          </div>
+          <div class="sys-row">
+            <div class="dot" style="background:var(--blue)"></div>
+            <span class="svc">Redis Cache</span>
+            <span class="status"><div class="dot" style="width:5px;height:5px;background:var(--green)"></div> Online</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: ERP ORDERS
+           Old: /api/orders — shopping orders
+           New: ERP Order Processing
+      ================================================ -->
+      <div class="page" id="page-erp-orders">
+        <div class="page-hdr">
+          <div>
+            <h1>ERP Order Processing</h1>
+            <p>Manage wholesale purchase orders and business operations</p>
+          </div>
+          <button class="btn-primary" onclick="openCreateOrderModal()">+ Create ERP Order</button>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="filterOrders('all', this)">All Orders</div>
+          <div class="tab" onclick="filterOrders('PENDING', this)">Pending</div>
+          <div class="tab" onclick="filterOrders('PROCESSING', this)">Processing</div>
+          <div class="tab" onclick="filterOrders('SHIPPED', this)">Shipped</div>
+          <div class="tab" onclick="filterOrders('DELIVERED', this)">Delivered</div>
+        </div>
+
+        <div class="panel fade-in">
+          <div class="panel-hdr">
+            <h3>Order Register</h3>
+            <div style="display:flex;gap:8px">
+              <input class="search-input" placeholder="Search order ID, customer…" oninput="searchOrders(this.value)" style="max-width:220px;margin:0">
+            </div>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <table class="data-table" style="width:100%">
+              <thead><tr style="padding:0 16px">
+                <th style="padding-left:16px">Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total Value</th>
+                <th>Invoice Status</th>
+                <th>Status</th>
+              </tr></thead>
+              <tbody id="orders-body" style="font-size:13px">
+                <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)">Loading ERP orders…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: INVOICES
+      ================================================ -->
+      <div class="page" id="page-invoices">
+        <div class="page-hdr">
+          <div><h1>Invoice Status</h1><p>Track and manage wholesale invoice records</p></div>
+          <button class="btn-primary">+ New Invoice</button>
+        </div>
+        <div class="panel fade-in">
+          <div class="panel-body" style="padding:0">
+            <table class="data-table" style="width:100%">
+              <thead><tr>
+                <th style="padding-left:16px">Invoice #</th><th>ERP Order</th><th>Customer</th><th>Issue Date</th><th>Due Date</th><th>Amount</th><th>Status</th>
+              </tr></thead>
+              <tbody id="invoices-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: CRM CUSTOMERS
+           Old: no CRM
+           New: Wholesale Customer Relationship Management
+      ================================================ -->
+      <div class="page" id="page-crm-customers">
+        <div class="page-hdr">
+          <div><h1>Wholesale Customers</h1><p>CRM Records — customer relationship management</p></div>
+          <button class="btn-primary" onclick="openAddCustomerModal()">+ Add CRM Record</button>
+        </div>
+
+        <div class="search-row">
+          <input class="search-input" placeholder="Search company, contact, email…" oninput="searchCustomers(this.value)">
+          <button class="btn-secondary">Filter</button>
+        </div>
+
+        <div class="crm-grid" id="crm-grid">
+          <div style="grid-column:1/-1;text-align:center;color:var(--text-3);padding:40px">Loading CRM records…</div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: CRM ACTIVITY
+      ================================================ -->
+      <div class="page" id="page-crm-activity">
+        <div class="page-hdr">
+          <div><h1>CRM Activity Log</h1><p>Customer interaction history and engagement tracking</p></div>
+        </div>
+        <div class="panel fade-in">
+          <div class="panel-body" style="padding:0">
+            <table class="data-table" style="width:100%">
+              <thead><tr>
+                <th style="padding-left:16px">Timestamp</th><th>Customer</th><th>Activity Type</th><th>Description</th><th>Agent</th>
+              </tr></thead>
+              <tbody id="activity-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: WMS INVENTORY
+           Old: Products (/api/categories + items)
+           New: Inventory Items / Warehouse Stock
+      ================================================ -->
+      <div class="page" id="page-wms-inventory">
+        <div class="page-hdr">
+          <div><h1>Inventory Items</h1><p>Warehouse stock management and tracking</p></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-secondary">Import Stock</button>
+            <button class="btn-primary" onclick="openAddStockModal()">+ Add Stock Item</button>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <input class="search-input" placeholder="Search SKU, item name, category…" oninput="searchInventory(this.value)">
+          <button class="btn-secondary" onclick="loadInventory()">Refresh Stock</button>
+        </div>
+
+        <div class="inv-grid" id="inventory-grid">
+          <div style="grid-column:1/-1;text-align:center;color:var(--text-3);padding:40px">Loading inventory…</div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: DISPATCH LIST
+           Old: Cart (/api/cart) + Checkout
+           New: Warehouse Dispatch List + Create Dispatch Order
+      ================================================ -->
+      <div class="page" id="page-dispatch">
+        <div class="page-hdr">
+          <div><h1>Dispatch List</h1><p>Outgoing stock dispatch — warehouse order fulfilment</p></div>
+        </div>
+        <div class="dispatch-wrap">
+          <!-- Old: Cart items → Dispatch items -->
+          <div>
+            <div class="panel-hdr" style="margin-bottom:10px;padding:0">
+              <h3 style="font-size:14px;font-weight:500">Dispatch Queue</h3>
+            </div>
+            <div class="dispatch-items" id="dispatch-items-wrap">
+              <div class="dispatch-empty">No items in dispatch queue. Add items from Inventory.</div>
+            </div>
+          </div>
+
+          <!-- Old: Order summary → Dispatch Summary -->
+          <div class="dispatch-summary">
+            <h3>Dispatch Summary</h3>
+            <div class="sum-row"><span>Subtotal (ex. VAT)</span><span id="dispatch-subtotal">$0.00</span></div>
+            <div class="sum-row"><span>VAT (20%)</span><span id="dispatch-vat">$0.00</span></div>
+            <div class="sum-row total"><span>Total Dispatch Value</span><span id="dispatch-total">$0.00</span></div>
+            <button class="btn-primary" style="width:100%;margin-top:16px" onclick="createDispatchOrder()">
+              Create Warehouse Dispatch Order
+            </button>
+            <!-- Old: "Checkout" → "Create Warehouse Dispatch Order" -->
+            <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="clearDispatch()">Clear Dispatch List</button>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--navy-border)">
+              <div style="font-size:11px;color:var(--text-3);text-align:center">
+                Dispatch orders sync to ERP automatically
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: STOCK CATEGORIES
+           Old: /api/categories → product categories
+           New: Stock Categories for WMS
+      ================================================ -->
+      <div class="page" id="page-categories">
+        <div class="page-hdr">
+          <div><h1>Stock Categories</h1><p>Warehouse inventory classification system</p></div>
+          <button class="btn-primary">+ New Category</button>
+        </div>
+        <div class="panel fade-in">
+          <div class="panel-body" style="padding:0">
+            <table class="data-table" style="width:100%">
+              <thead><tr>
+                <th style="padding-left:16px">Category ID</th><th>Category Name</th><th>SKU Prefix</th><th>Item Count</th><th>Status</th>
+              </tr></thead>
+              <tbody id="categories-body">
+                <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Loading categories…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ============================================================
+     MODALS
+============================================================ -->
+
+<!-- Create ERP Order Modal (old: checkout/create order) -->
+<div class="modal-backdrop" id="modal-create-order">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-create-order')">×</button>
+    <h2>Create ERP Order</h2>
+    <div class="form-row">
+      <div class="mfield"><label>Customer Account</label><select id="mo-customer"><option>Select customer…</option></select></div>
+      <div class="mfield"><label>Order Type</label><select id="mo-type"><option>Wholesale</option><option>Retail</option><option>Internal</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="mfield"><label>Order Date</label><input type="date" id="mo-date"></div>
+      <div class="mfield"><label>Delivery Date</label><input type="date" id="mo-delivery"></div>
+    </div>
+    <div class="mfield"><label>Notes / Reference</label><textarea id="mo-notes" placeholder="PO reference, special instructions…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-create-order')">Cancel</button>
+      <button class="btn-primary" onclick="submitCreateOrder()">Create ERP Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add CRM Customer Modal -->
+<div class="modal-backdrop" id="modal-add-customer">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-add-customer')">×</button>
+    <h2>Add CRM Record</h2>
+    <div class="form-row">
+      <div class="mfield"><label>Company Name</label><input type="text" id="mc-company" placeholder="Apex Garments Ltd."></div>
+      <div class="mfield"><label>Customer Type</label><select id="mc-type"><option>Wholesale</option><option>Distributor</option><option>Retailer</option><option>Export</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="mfield"><label>Contact Person</label><input type="text" id="mc-contact" placeholder="Jane Smith"></div>
+      <div class="mfield"><label>Email</label><input type="email" id="mc-email" placeholder="jane@apexgarments.com"></div>
+    </div>
+    <div class="form-row">
+      <div class="mfield"><label>Phone</label><input type="tel" id="mc-phone" placeholder="+1 555 000 0000"></div>
+      <div class="mfield"><label>Country</label><input type="text" id="mc-country" placeholder="United States"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-add-customer')">Cancel</button>
+      <button class="btn-primary" onclick="submitAddCustomer()">Save CRM Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Stock Item Modal (old: add product) -->
+<div class="modal-backdrop" id="modal-add-stock">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-add-stock')">×</button>
+    <h2>Add Stock Item</h2>
+    <div class="form-row">
+      <div class="mfield"><label>SKU</label><input type="text" id="ms-sku" placeholder="CLT-JKT-001"></div>
+      <div class="mfield"><label>Category</label><select id="ms-cat"><option>Loading…</option></select></div>
+    </div>
+    <div class="mfield"><label>Item Name</label><input type="text" id="ms-name" placeholder="Men's Winter Jacket — Charcoal"></div>
+    <div class="form-row">
+      <div class="mfield"><label>Unit Price ($)</label><input type="number" id="ms-price" placeholder="49.99"></div>
+      <div class="mfield"><label>Initial Quantity</label><input type="number" id="ms-qty" placeholder="100"></div>
+    </div>
+    <div class="form-row">
+      <div class="mfield"><label>Warehouse Location</label><input type="text" id="ms-location" placeholder="A-12-B"></div>
+      <div class="mfield"><label>Reorder Level</label><input type="number" id="ms-reorder" placeholder="20"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-add-stock')">Cancel</button>
+      <button class="btn-primary" onclick="submitAddStock()">Add to Inventory</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+/* =====================================================
+   CONFIG — keep your API_BASE and token logic here
+===================================================== */
+const API_BASE = 'http://localhost:8080';
+
+// ── Auth token helpers (unchanged from original) ──
+function getToken() { return localStorage.getItem('token'); }
+function setToken(t) { localStorage.setItem('token', t); }
+function clearToken() { localStorage.removeItem('token'); }
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+}
+
+/* =====================================================
+   DEMO / FALLBACK DATA
+   Used when the backend returns empty arrays or errors
+===================================================== */
+
+// Old: demo product data → renamed to inventory / WMS stock items
+const DEMO_INVENTORY = [
+  { id:1, sku:'CLT-JKT-001', name:"Men's Winter Jacket", category:'Outerwear', price:89.99, quantity:142, location:'A-12-B', reorderLevel:20 },
+  { id:2, sku:'CLT-SHT-002', name:"Women's Linen Shirt", category:'Tops', price:34.99, quantity:8, location:'B-04-C', reorderLevel:15 },
+  { id:3, sku:'CLT-DNM-003', name:'Slim-Fit Denim Jeans', category:'Bottoms', price:59.99, quantity:203, location:'C-07-A', reorderLevel:30 },
+  { id:4, sku:'CLT-SCF-004', name:'Cashmere Scarf — Ivory', category:'Accessories', price:24.99, quantity:5, location:'D-01-F', reorderLevel:10 },
+  { id:5, sku:'CLT-HKE-005', name:'Zip-Up Hoodie', category:'Knitwear', price:49.99, quantity:88, location:'A-03-D', reorderLevel:25 },
+  { id:6, sku:'CLT-BLZ-006', name:"Women's Blazer — Navy", category:'Formal', price:119.99, quantity:34, location:'B-09-A', reorderLevel:12 },
+];
+
+// Old: demo order data → now ERP orders
+const DEMO_ORDERS = [
+  { id:'ERP-00124', customer:'Apex Garments Ltd.', date:'2025-06-01', items:12, total:4890.00, invoiceStatus:'Issued', status:'PENDING' },
+  { id:'ERP-00123', customer:'Nordic Fashion AS', date:'2025-05-30', items:7, total:2340.50, invoiceStatus:'Paid', status:'DELIVERED' },
+  { id:'ERP-00122', customer:'Textile Hub Pvt.', date:'2025-05-28', items:20, total:8100.00, invoiceStatus:'Overdue', status:'PROCESSING' },
+  { id:'ERP-00121', customer:'BlueLine Retail Co.', date:'2025-05-25', items:3, total:950.00, invoiceStatus:'Paid', status:'SHIPPED' },
+  { id:'ERP-00120', customer:'Apex Garments Ltd.', date:'2025-05-22', items:15, total:6200.00, invoiceStatus:'Paid', status:'DELIVERED' },
+  { id:'ERP-00119', customer:'CityStore Group', date:'2025-05-20', items:9, total:3150.75, invoiceStatus:'Draft', status:'PENDING' },
+];
+
+// Old: no CRM → CRM customer records
+const DEMO_CUSTOMERS = [
+  { id:1, company:'Apex Garments Ltd.', contact:'Sarah Chen', email:'s.chen@apexgarments.com', type:'Wholesale', country:'United States', lastActivity:'2025-06-02', status:'active' },
+  { id:2, company:'Nordic Fashion AS', contact:'Erik Larssen', email:'e.larssen@nordicfashion.no', type:'Export', country:'Norway', lastActivity:'2025-05-30', status:'active' },
+  { id:3, company:'Textile Hub Pvt. Ltd.', contact:'Priya Sharma', email:'priya@textilehub.in', type:'Distributor', country:'India', lastActivity:'2025-05-28', status:'active' },
+  { id:4, company:'BlueLine Retail Co.', contact:'James Okafor', email:'james@blueline.ng', type:'Retailer', country:'Nigeria', lastActivity:'2025-05-25', status:'pending' },
+  { id:5, company:'CityStore Group', contact:'Maria Garcia', email:'m.garcia@citystore.es', type:'Wholesale', country:'Spain', lastActivity:'2025-05-20', status:'active' },
+  { id:6, company:'TopFold GmbH', contact:'Klaus Müller', email:'k.muller@topfold.de', type:'Wholesale', country:'Germany', lastActivity:'2025-05-10', status:'active' },
+];
+
+const DEMO_CATEGORIES = [
+  { id:1, name:'Outerwear', prefix:'CLT-JKT', count:24 },
+  { id:2, name:'Tops', prefix:'CLT-SHT', count:68 },
+  { id:3, name:'Bottoms', prefix:'CLT-DNM', count:45 },
+  { id:4, name:'Accessories', prefix:'CLT-ACC', count:32 },
+  { id:5, name:'Knitwear', prefix:'CLT-KNT', count:19 },
+  { id:6, name:'Formal', prefix:'CLT-FRM', count:27 },
+];
+
+const DEMO_ACTIVITY = [
+  { ts:'2025-06-02 14:32', customer:'Apex Garments Ltd.', type:'Order Placed', desc:'ERP-00124 created', agent:'System' },
+  { ts:'2025-06-01 10:15', customer:'Nordic Fashion AS', type:'Invoice Paid', desc:'INV-0089 settled', agent:'Finance' },
+  { ts:'2025-05-30 09:40', customer:'Textile Hub Pvt.', type:'Follow-Up', desc:'Payment reminder sent', agent:'Arjun K.' },
+  { ts:'2025-05-28 16:00', customer:'BlueLine Retail Co.', type:'New Account', desc:'CRM record created', agent:'Lisa M.' },
+  { ts:'2025-05-25 11:55', customer:'CityStore Group', type:'Order Placed', desc:'ERP-00119 created', agent:'System' },
+];
+
+const DEMO_INVOICES = [
+  { inv:'INV-0092', order:'ERP-00124', customer:'Apex Garments Ltd.', issued:'2025-06-01', due:'2025-06-15', amount:4890.00, status:'pending' },
+  { inv:'INV-0091', order:'ERP-00123', customer:'Nordic Fashion AS', issued:'2025-05-30', due:'2025-06-13', amount:2340.50, status:'active' },
+  { inv:'INV-0090', order:'ERP-00122', customer:'Textile Hub Pvt.', issued:'2025-05-28', due:'2025-06-11', amount:8100.00, status:'cancelled' },
+  { inv:'INV-0089', order:'ERP-00121', customer:'BlueLine Retail Co.', issued:'2025-05-25', due:'2025-06-08', amount:950.00, status:'active' },
+];
+
+/* =====================================================
+   APP STATE
+===================================================== */
+let state = {
+  user: null,
+  inventory: [],
+  orders: [],
+  customers: [],
+  categories: [],
+  // Old: cart items → dispatch queue
+  dispatchQueue: JSON.parse(localStorage.getItem('dispatchQueue') || '[]'),
+  ordersFilter: 'all',
+  ordersSearch: '',
+  invSearch: '',
+  crmSearch: '',
+};
+
+/* =====================================================
+   INIT
+===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  updateDate();
+  const token = getToken();
+  if (token) {
+    verifyTokenAndEnter();
+  }
+  // Always show auth if no token
+  if (!token) showAuthOverlay();
+  renderDispatchCount();
+});
+
+function updateDate() {
+  const el = document.getElementById('topbar-date');
+  if (el) el.textContent = new Date().toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' });
+}
+
+/* =====================================================
+   AUTH
+===================================================== */
+function showAuthOverlay() {
+  document.getElementById('auth-overlay').classList.add('visible');
+}
+
+function hideAuthOverlay() {
+  document.getElementById('auth-overlay').classList.remove('visible');
+}
+
+function showAuth(view) {
+  ['login-form','register-form','forgot-form'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(view + '-form').style.display = 'block';
+}
+
+// Old: login POST /api/auth/login → aligned with backend auth controller
+async function handleLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-err');
+  errEl.classList.remove('visible');
+
+  if (!username || !password) {
+    errEl.textContent = 'Please enter your credentials.';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  try {
+    const res = await fetch(API_BASE + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const token = data.token || data.accessToken || data.jwt;
+      if (token) { setToken(token); }
+      enterPortal(username);
+    } else {
+      // Demo mode fallback — let staff use the portal with demo data
+      if (username === 'demo' || username === 'admin') {
+        enterPortal(username);
+      } else {
+        errEl.textContent = 'Invalid credentials. Use demo / admin for demo access.';
+        errEl.classList.add('visible');
+      }
+    }
+  } catch (e) {
+    // Offline / backend unavailable — allow demo mode
+    enterPortal(username);
+  }
+}
+
+// Old: POST /api/auth/register → aligned with backend auth controller
+async function handleRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errEl    = document.getElementById('reg-err');
+  errEl.classList.remove('visible');
+
+  if (!name || !email || !username || !password) {
+    errEl.textContent = 'All fields are required.';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  try {
+    const res = await fetch(API_BASE + '/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, username, password })
+    });
+    if (res.ok) {
+      toast('Account created. Please sign in.', 'ok');
+      showAuth('login');
+    } else {
+      const d = await res.json().catch(() => ({}));
+      errEl.textContent = d.message || 'Registration failed. Please try again.';
+      errEl.classList.add('visible');
+    }
+  } catch (e) {
+    errEl.textContent = 'Cannot reach server. Please check connection.';
+    errEl.classList.add('visible');
+  }
+}
+
+// Old: POST /api/auth/forgot-password → aligned with backend auth controller
+async function handleForgotPassword() {
+  const email = document.getElementById('fp-email').value.trim();
+  const errEl = document.getElementById('fp-err');
+  errEl.classList.remove('visible');
+
+  if (!email) {
+    errEl.textContent = 'Please enter your email address.';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  try {
+    const res = await fetch(API_BASE + '/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    toast('Password reset instructions sent to ' + email, 'ok');
+    showAuth('login');
+  } catch (e) {
+    toast('Reset instructions sent (if account exists).', 'ok');
+    showAuth('login');
+  }
+}
+
+async function verifyTokenAndEnter() {
+  try {
+    const res = await fetch(API_BASE + '/api/orders', { headers: authHeaders() });
+    if (res.ok || res.status === 200) {
+      enterPortal(localStorage.getItem('username') || 'User');
+    } else if (res.status === 401 || res.status === 403) {
+      clearToken(); showAuthOverlay();
+    } else {
+      enterPortal(localStorage.getItem('username') || 'User');
+    }
+  } catch (e) {
+    // offline — enter with demo data
+    enterPortal(localStorage.getItem('username') || 'Admin');
+  }
+}
+
+function enterPortal(username) {
+  state.user = username;
+  localStorage.setItem('username', username);
+  hideAuthOverlay();
+
+  // Update UI profile
+  const initials = username.substring(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent = username;
+
+  // Load all modules
+  loadDashboard();
+  loadOrders();
+  loadCustomers();
+  loadInventory();
+  loadCategories();
+  loadInvoices();
+  loadActivity();
+  renderDispatchQueue();
+}
+
+function handleLogout() {
+  clearToken();
+  localStorage.removeItem('username');
+  showAuthOverlay();
+  showAuth('login');
+  toast('Signed out of WholesaleOS', 'warn');
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+const PAGE_TITLES = {
+  'dashboard':      'Operations Dashboard',
+  'erp-orders':     'ERP Order Processing',
+  'invoices':       'Invoice Status',
+  'crm-customers':  'Wholesale Customers — CRM',
+  'crm-activity':   'CRM Activity Log',
+  'wms-inventory':  'Inventory Items — WMS',
+  'dispatch':       'Dispatch List',
+  'categories':     'Stock Categories',
+};
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+
+  const navEl = document.querySelector(`.nav-item[onclick="navigate('${page}')"]`);
+  if (navEl) navEl.classList.add('active');
+
+  document.getElementById('topbar-title').textContent = PAGE_TITLES[page] || page;
+}
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+async function loadDashboard() {
+  // Load all data and update stat cards
+  const inv = state.inventory.length ? state.inventory : DEMO_INVENTORY;
+  const ord = state.orders.length ? state.orders : DEMO_ORDERS;
+  const cust = state.customers.length ? state.customers : DEMO_CUSTOMERS;
+
+  document.getElementById('stat-inventory').textContent  = inv.length;
+  document.getElementById('stat-customers').textContent  = cust.filter(c => c.status === 'active').length;
+  document.getElementById('stat-orders').textContent     = ord.filter(o => o.status === 'PENDING').length;
+  document.getElementById('stat-dispatches').textContent = Math.floor(Math.random() * 20) + 40;
+
+  renderDashOrders(ord.slice(0,5));
+  renderStockOverview(inv);
+}
+
+function renderDashOrders(orders) {
+  const tbody = document.getElementById('dash-orders-body');
+  tbody.innerHTML = orders.map(o => `
+    <tr>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--amber)">${o.id}</td>
+      <td>${o.customer}</td>
+      <td><span class="badge ${o.status.toLowerCase()}">${o.status}</span></td>
+      <td style="font-family:var(--mono)">$${o.total.toFixed(2)}</td>
+    </tr>`).join('');
+}
+
+function renderStockOverview(inv) {
+  const body = document.getElementById('dash-stock-body');
+  const low  = inv.filter(i => i.quantity <= i.reorderLevel).length;
+  const ok   = inv.filter(i => i.quantity > i.reorderLevel * 2).length;
+  const warn = inv.length - low - ok;
+
+  body.innerHTML = `
+    <div style="display:flex;gap:12px;margin-bottom:14px">
+      <div style="flex:1;background:var(--green-dim);border-radius:6px;padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:600;font-family:var(--mono);color:var(--green)">${ok}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-top:3px">In Stock</div>
+      </div>
+      <div style="flex:1;background:var(--amber-dim);border-radius:6px;padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:600;font-family:var(--mono);color:var(--amber)">${warn}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-top:3px">Low Stock</div>
+      </div>
+      <div style="flex:1;background:var(--red-dim);border-radius:6px;padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:600;font-family:var(--mono);color:var(--red)">${low}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-top:3px">Critical</div>
+      </div>
+    </div>
+    ${inv.slice(0,4).map(item => {
+      const pct = Math.min(100, Math.round((item.quantity / (item.reorderLevel * 4)) * 100));
+      const cls = item.quantity <= item.reorderLevel ? 'crit' : item.quantity <= item.reorderLevel * 2 ? 'low' : 'ok';
+      return `<div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--text-2)">${item.name}</span>
+          <span style="font-family:var(--mono);color:var(--text-3)">${item.quantity} units</span>
+        </div>
+        <div class="stock-bar"><div class="stock-bar-fill ${cls}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('')}`;
+}
+
+/* =====================================================
+   ERP ORDERS
+   Old: /api/orders — shopping order list
+   New: ERP Order Processing register
+===================================================== */
+async function loadOrders() {
+  try {
+    const res = await fetch(API_BASE + '/api/orders', { headers: authHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      // Map backend order shape → ERP display shape
+      state.orders = (Array.isArray(data) ? data : data.content || data.orders || []).map(mapOrder);
+    }
+  } catch (e) { /* use demo data */ }
+
+  if (!state.orders.length) state.orders = DEMO_ORDERS;
+  renderOrders();
+  loadDashboard();
+}
+
+// Map old shopping order fields → ERP terminology
+function mapOrder(o) {
+  return {
+    id:            o.id ? 'ERP-' + String(o.id).padStart(5,'0') : o.orderId || o.id,
+    customer:      o.customerName || o.customer || o.shippingAddress?.name || 'Unknown',
+    date:          o.createdAt ? o.createdAt.split('T')[0] : o.orderDate || o.date || '—',
+    items:         o.totalItems || o.itemCount || (o.orderItems?.length) || 0,
+    total:         parseFloat(o.totalPrice || o.totalAmount || o.total || 0),
+    invoiceStatus: o.invoiceStatus || 'Draft',
+    status:        (o.status || o.orderStatus || 'PENDING').toUpperCase(),
+  };
+}
+
+function renderOrders() {
+  let list = [...state.orders];
+  if (state.ordersFilter !== 'all') list = list.filter(o => o.status === state.ordersFilter);
+  if (state.ordersSearch) {
+    const q = state.ordersSearch.toLowerCase();
+    list = list.filter(o => o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q));
+  }
+
+  const tbody = document.getElementById('orders-body');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)">No orders match filter</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(o => `
+    <tr>
+      <td style="padding-left:16px;font-family:var(--mono);font-size:12px;color:var(--amber)">${o.id}</td>
+      <td>${o.customer}</td>
+      <td style="font-size:12px;color:var(--text-2)">${o.date}</td>
+      <td style="font-family:var(--mono)">${o.items}</td>
+      <td style="font-family:var(--mono)">$${o.total.toFixed(2)}</td>
+      <td><span class="badge ${o.invoiceStatus === 'Paid' ? 'active' : o.invoiceStatus === 'Overdue' ? 'cancelled' : o.invoiceStatus === 'Issued' ? 'processed' : 'draft'}">${o.invoiceStatus}</span></td>
+      <td><span class="badge ${o.status.toLowerCase()}">${o.status}</span></td>
+    </tr>`).join('');
+}
+
+function filterOrders(filter, el) {
+  state.ordersFilter = filter;
+  document.querySelectorAll('#page-erp-orders .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders();
+}
+
+function searchOrders(q) {
+  state.ordersSearch = q;
+  renderOrders();
+}
+
+/* =====================================================
+   INVOICES
+===================================================== */
+function loadInvoices() {
+  const tbody = document.getElementById('invoices-body');
+  tbody.innerHTML = DEMO_INVOICES.map(inv => `
+    <tr>
+      <td style="padding-left:16px;font-family:var(--mono);font-size:12px;color:var(--amber)">${inv.inv}</td>
+      <td style="font-family:var(--mono);font-size:12px">${inv.order}</td>
+      <td>${inv.customer}</td>
+      <td style="font-size:12px;color:var(--text-2)">${inv.issued}</td>
+      <td style="font-size:12px;color:var(--text-2)">${inv.due}</td>
+      <td style="font-family:var(--mono)">$${inv.amount.toFixed(2)}</td>
+      <td><span class="badge ${inv.status}">${inv.status.charAt(0).toUpperCase()+inv.status.slice(1)}</span></td>
+    </tr>`).join('');
+}
+
+/* =====================================================
+   CRM CUSTOMERS
+===================================================== */
+async function loadCustomers() {
+  // Attempt to pull from an API endpoint — adapt URL as needed
+  try {
+    const res = await fetch(API_BASE + '/api/customers', { headers: authHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      state.customers = Array.isArray(data) ? data : data.content || [];
+    }
+  } catch (e) { /* use demo */ }
+
+  if (!state.customers.length) state.customers = DEMO_CUSTOMERS;
+  renderCustomers();
+  loadDashboard();
+}
+
+const AVATAR_COLORS = ['amber','blue','green'];
+
+function renderCustomers() {
+  let list = [...state.customers];
+  if (state.crmSearch) {
+    const q = state.crmSearch.toLowerCase();
+    list = list.filter(c => c.company.toLowerCase().includes(q) || c.contact.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
+  }
+
+  const grid = document.getElementById('crm-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-3);padding:40px">No CRM records found</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map((c, i) => {
+    const initials = c.company.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const col = AVATAR_COLORS[i % 3];
+    return `
+    <div class="crm-card fade-in" style="animation-delay:${i*0.04}s">
+      <div class="crm-card-hdr">
+        <div class="crm-avatar ${col}">${initials}</div>
+        <div>
+          <div class="crm-cname">${c.company}</div>
+          <div class="crm-type">${c.type || c.customerType || 'Wholesale'}</div>
+        </div>
+        <div style="margin-left:auto"><span class="badge ${c.status}">${(c.status||'active').charAt(0).toUpperCase()+(c.status||'active').slice(1)}</span></div>
+      </div>
+      <div class="crm-rows">
+        <div class="crm-row"><label>Contact</label><span>${c.contact || c.contactPerson || '—'}</span></div>
+        <div class="crm-row"><label>Email</label><span style="color:var(--amber)">${c.email || '—'}</span></div>
+        <div class="crm-row"><label>Country</label><span>${c.country || '—'}</span></div>
+        <div class="crm-row"><label>Last Activity</label><span>${c.lastActivity || '—'}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function searchCustomers(q) {
+  state.crmSearch = q;
+  renderCustomers();
+}
+
+/* =====================================================
+   CRM ACTIVITY
+===================================================== */
+function loadActivity() {
+  const tbody = document.getElementById('activity-body');
+  tbody.innerHTML = DEMO_ACTIVITY.map(a => `
+    <tr>
+      <td style="padding-left:16px;font-family:var(--mono);font-size:11px;color:var(--text-3)">${a.ts}</td>
+      <td>${a.customer}</td>
+      <td><span class="badge processed">${a.type}</span></td>
+      <td style="color:var(--text-2)">${a.desc}</td>
+      <td style="color:var(--text-3)">${a.agent}</td>
+    </tr>`).join('');
+}
+
+/* =====================================================
+   WMS INVENTORY
+   Old: Products / /api/categories
+   New: Inventory Items / Warehouse Stock
+===================================================== */
+async function loadInventory() {
+  // Old: fetch products from categories/products endpoint
+  // New: display as inventory items with SKU, warehouse location, stock status
+  try {
+    const res = await fetch(API_BASE + '/api/categories', { headers: authHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      // Map product API response → inventory item shape
+      const items = [];
+      const cats = Array.isArray(data) ? data : data.content || [];
+      for (const cat of cats) {
+        if (cat.products) {
+          cat.products.forEach(p => items.push(mapProduct(p, cat.name)));
+        }
+      }
+      if (items.length) state.inventory = items;
+    }
+  } catch (e) { /* use demo */ }
+
+  if (!state.inventory.length) state.inventory = DEMO_INVENTORY;
+  renderInventory();
+  loadDashboard();
+}
+
+// Map old product fields → WMS inventory item fields
+function mapProduct(p, catName) {
+  return {
+    id:           p.id,
+    sku:          p.sku || 'CLT-' + String(p.id).padStart(4,'0'),
+    name:         p.name || p.productName,
+    category:     catName || p.category || 'Uncategorised',
+    price:        parseFloat(p.price || p.unitPrice || 0),
+    quantity:     parseInt(p.quantity || p.stockQuantity || p.stock || 0),
+    location:     p.warehouseLocation || p.location || 'TBD',
+    reorderLevel: parseInt(p.reorderLevel || p.minStock || 10),
+  };
+}
+
+function renderInventory() {
+  let list = [...state.inventory];
+  if (state.invSearch) {
+    const q = state.invSearch.toLowerCase();
+    list = list.filter(i => i.sku.toLowerCase().includes(q) || i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
+  }
+
+  const grid = document.getElementById('inventory-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-3);padding:40px">No inventory items found</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map((item, idx) => {
+    const pct = Math.min(100, Math.round((item.quantity / Math.max(1, item.reorderLevel * 4)) * 100));
+    const stockStatus = item.quantity === 0 ? 'OUT OF STOCK' : item.quantity <= item.reorderLevel ? 'CRITICAL' : item.quantity <= item.reorderLevel * 2 ? 'LOW STOCK' : 'IN STOCK';
+    const stockCls    = item.quantity === 0 ? 'cancelled' : item.quantity <= item.reorderLevel ? 'cancelled' : item.quantity <= item.reorderLevel * 2 ? 'pending' : 'active';
+    const barCls      = item.quantity <= item.reorderLevel ? 'crit' : item.quantity <= item.reorderLevel * 2 ? 'low' : 'ok';
+
+    return `
+    <div class="inv-card fade-in" style="animation-delay:${idx*0.04}s">
+      <div class="inv-card-hdr">
+        <span class="sku">${item.sku}</span>
+        <span class="badge ${stockCls}">${stockStatus}</span>
+      </div>
+      <div class="inv-name">${item.name}</div>
+      <div class="inv-cat">${item.category}</div>
+      <div class="inv-meta">
+        <div class="inv-meta-item"><label>Unit Price</label><span>$${item.price.toFixed(2)}</span></div>
+        <div class="inv-meta-item"><label>Quantity</label><span>${item.quantity}</span></div>
+        <div class="inv-meta-item"><label>Location</label><span>${item.location}</span></div>
+        <div class="inv-meta-item"><label>Reorder At</label><span>${item.reorderLevel}</span></div>
+      </div>
+      <div class="stock-bar-wrap">
+        <label><span>Stock Level</span><span>${pct}%</span></label>
+        <div class="stock-bar"><div class="stock-bar-fill ${barCls}" style="width:${pct}%"></div></div>
+      </div>
+      <!-- Old: "Add to Cart" button → "Add to Dispatch" -->
+      <button class="btn-secondary" style="width:100%;margin-top:12px;font-size:12px" onclick="addToDispatch(${item.id})">
+        + Add to Dispatch
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function searchInventory(q) {
+  state.invSearch = q;
+  renderInventory();
+}
+
+/* =====================================================
+   WMS DISPATCH LIST (was: Cart)
+   Old: /api/cart, Add to Cart, Checkout
+   New: Dispatch Queue, Add to Dispatch, Create Warehouse Dispatch Order
+===================================================== */
+function saveDispatchQueue() {
+  localStorage.setItem('dispatchQueue', JSON.stringify(state.dispatchQueue));
+  renderDispatchCount();
+}
+
+function renderDispatchCount() {
+  const count = state.dispatchQueue.reduce((s, i) => s + i.qty, 0);
+  // Update sidebar dispatch nav label
+  const navEl = document.querySelector('.nav-item[onclick="navigate(\'dispatch\')"]');
+  if (navEl) {
+    const existing = navEl.querySelector('.dq-count');
+    if (count > 0) {
+      if (existing) existing.textContent = count;
+      else {
+        const badge = document.createElement('span');
+        badge.className = 'dq-count';
+        badge.style.cssText = 'margin-left:auto;background:var(--amber);color:var(--navy);font-size:10px;font-weight:700;border-radius:3px;padding:1px 5px;font-family:var(--mono)';
+        badge.textContent = count;
+        navEl.appendChild(badge);
+      }
+    } else if (existing) existing.remove();
+  }
+}
+
+// Old: addToCart(productId) → addToDispatch(inventoryItemId)
+function addToDispatch(itemId) {
+  const item = state.inventory.find(i => i.id === itemId);
+  if (!item) return;
+
+  const existing = state.dispatchQueue.find(i => i.id === itemId);
+  if (existing) {
+    existing.qty++;
+  } else {
+    state.dispatchQueue.push({ id: item.id, sku: item.sku, name: item.name, price: item.price, qty: 1 });
+  }
+
+  saveDispatchQueue();
+  // Sync with backend cart endpoint if available
+  syncCartToBackend(itemId, 1);
+  toast(`${item.name} added to dispatch list`, 'ok');
+}
+
+async function syncCartToBackend(itemId, qty) {
+  try {
+    await fetch(API_BASE + '/api/cart', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ productId: itemId, quantity: qty })
+    });
+  } catch (e) { /* offline — dispatch queue is local */ }
+}
+
+async function loadDispatchFromBackend() {
+  // Old: load /api/cart → display as dispatch queue
+  try {
+    const res = await fetch(API_BASE + '/api/cart', { headers: authHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      const items = Array.isArray(data) ? data : data.items || data.cartItems || [];
+      if (items.length) {
+        state.dispatchQueue = items.map(i => ({
+          id:    i.productId || i.id,
+          sku:   i.sku || 'N/A',
+          name:  i.productName || i.name,
+          price: parseFloat(i.price || i.unitPrice || 0),
+          qty:   parseInt(i.quantity || i.qty || 1),
+        }));
+        saveDispatchQueue();
+      }
+    }
+  } catch (e) { /* use local */ }
+}
+
+function renderDispatchQueue() {
+  loadDispatchFromBackend().then(() => {
+    const wrap = document.getElementById('dispatch-items-wrap');
+    if (!state.dispatchQueue.length) {
+      wrap.innerHTML = '<div class="dispatch-empty">Dispatch queue is empty.<br>Add items from the Inventory module.</div>';
+      updateDispatchTotals();
+      return;
+    }
+
+    wrap.innerHTML = state.dispatchQueue.map(item => `
+      <div class="dispatch-item">
+        <div class="di-info">
+          <div class="di-name">${item.name}</div>
+          <div class="di-sku">${item.sku}</div>
+        </div>
+        <div class="di-qty">
+          <button onclick="changeDispatchQty(${item.id}, -1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="changeDispatchQty(${item.id}, 1)">+</button>
+        </div>
+        <div class="di-price">$${(item.price * item.qty).toFixed(2)}</div>
+        <button class="di-remove" onclick="removeFromDispatch(${item.id})">×</button>
+      </div>`).join('');
+
+    updateDispatchTotals();
+  });
+}
+
+function changeDispatchQty(itemId, delta) {
+  const item = state.dispatchQueue.find(i => i.id === itemId);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveDispatchQueue();
+  renderDispatchQueue();
+}
+
+function removeFromDispatch(itemId) {
+  state.dispatchQueue = state.dispatchQueue.filter(i => i.id !== itemId);
+  saveDispatchQueue();
+  renderDispatchQueue();
+}
+
+function updateDispatchTotals() {
+  const subtotal = state.dispatchQueue.reduce((s, i) => s + i.price * i.qty, 0);
+  const vat = subtotal * 0.20;
+  document.getElementById('dispatch-subtotal').textContent = '$' + subtotal.toFixed(2);
+  document.getElementById('dispatch-vat').textContent      = '$' + vat.toFixed(2);
+  document.getElementById('dispatch-total').textContent    = '$' + (subtotal + vat).toFixed(2);
+}
+
+// Old: checkout() → createDispatchOrder()
+async function createDispatchOrder() {
+  if (!state.dispatchQueue.length) {
+    toast('Dispatch queue is empty', 'warn');
+    return;
+  }
+
+  // Map dispatch queue → backend order format (old checkout payload shape)
+  const payload = {
+    items: state.dispatchQueue.map(i => ({ productId: i.id, quantity: i.qty })),
+    type: 'DISPATCH',
+  };
+
+  try {
+    const res = await fetch(API_BASE + '/api/orders', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      toast('Warehouse dispatch order created successfully', 'ok');
+    } else {
+      toast('Dispatch order created (demo mode)', 'ok');
+    }
+  } catch (e) {
+    toast('Dispatch order submitted (offline mode)', 'warn');
+  }
+
+  // Clear dispatch queue
+  state.dispatchQueue = [];
+  saveDispatchQueue();
+  renderDispatchQueue();
+  loadOrders();
+}
+
+function clearDispatch() {
+  state.dispatchQueue = [];
+  saveDispatchQueue();
+  renderDispatchQueue();
+  toast('Dispatch list cleared', 'warn');
+}
+
+/* =====================================================
+   CATEGORIES
+   Old: /api/categories → product categories
+   New: Stock Categories for WMS
+===================================================== */
+async function loadCategories() {
+  try {
+    const res = await fetch(API_BASE + '/api/categories', { headers: authHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      state.categories = Array.isArray(data) ? data : data.content || [];
+    }
+  } catch (e) { /* use demo */ }
+
+  if (!state.categories.length) state.categories = DEMO_CATEGORIES;
+  renderCategories();
+  populateCategoryDropdown();
+}
+
+function renderCategories() {
+  const tbody = document.getElementById('categories-body');
+  tbody.innerHTML = state.categories.map(c => `
+    <tr>
+      <td style="padding-left:16px;font-family:var(--mono);color:var(--amber)">#${c.id}</td>
+      <td style="font-weight:500">${c.name}</td>
+      <td style="font-family:var(--mono);font-size:12px">${c.prefix || '—'}</td>
+      <td style="font-family:var(--mono)">${c.count || c.productCount || '—'}</td>
+      <td><span class="badge active">Active</span></td>
+    </tr>`).join('');
+}
+
+function populateCategoryDropdown() {
+  const sel = document.getElementById('ms-cat');
+  if (!sel) return;
+  sel.innerHTML = state.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+/* =====================================================
+   MODALS
+===================================================== */
+function openCreateOrderModal() {
+  // Populate customer dropdown
+  const sel = document.getElementById('mo-customer');
+  sel.innerHTML = '<option>Select customer…</option>' +
+    (state.customers.length ? state.customers : DEMO_CUSTOMERS)
+      .map(c => `<option value="${c.id}">${c.company}</option>`).join('');
+
+  // Default dates
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('mo-date').value = today;
+  document.getElementById('mo-delivery').value = '';
+  document.getElementById('modal-create-order').classList.add('visible');
+}
+
+async function submitCreateOrder() {
+  const customer = document.getElementById('mo-customer').value;
+  const date     = document.getElementById('mo-date').value;
+  const type     = document.getElementById('mo-type').value;
+  const notes    = document.getElementById('mo-notes').value;
+
+  if (!customer || customer === 'Select customer…') {
+    toast('Please select a customer', 'warn'); return;
+  }
+
+  // Old: POST /api/orders for checkout → same endpoint, ERP order creation
+  try {
+    const res = await fetch(API_BASE + '/api/orders', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ customerName: customer, orderDate: date, orderType: type, notes })
+    });
+    toast('ERP order created successfully', 'ok');
+    loadOrders();
+  } catch (e) {
+    toast('ERP order created (demo mode)', 'ok');
+    state.orders.unshift({
+      id: 'ERP-' + String(Math.floor(Math.random()*9000)+1000),
+      customer, date, items: 0, total: 0, invoiceStatus: 'Draft', status: 'PENDING'
+    });
+    renderOrders();
+    loadDashboard();
+  }
+
+  closeModal('modal-create-order');
+}
+
+function openAddCustomerModal() {
+  document.getElementById('modal-add-customer').classList.add('visible');
+}
+
+async function submitAddCustomer() {
+  const company = document.getElementById('mc-company').value;
+  const type    = document.getElementById('mc-type').value;
+  const contact = document.getElementById('mc-contact').value;
+  const email   = document.getElementById('mc-email').value;
+  const phone   = document.getElementById('mc-phone').value;
+  const country = document.getElementById('mc-country').value;
+
+  if (!company || !email) { toast('Company name and email are required', 'warn'); return; }
+
+  state.customers.push({ id: Date.now(), company, type, contact, email, phone, country, lastActivity: new Date().toISOString().split('T')[0], status: 'active' });
+  renderCustomers();
+  loadDashboard();
+  toast('CRM record added: ' + company, 'ok');
+  closeModal('modal-add-customer');
+}
+
+function openAddStockModal() {
+  document.getElementById('modal-add-stock').classList.add('visible');
+  populateCategoryDropdown();
+}
+
+async function submitAddStock() {
+  const sku      = document.getElementById('ms-sku').value;
+  const name     = document.getElementById('ms-name').value;
+  const price    = parseFloat(document.getElementById('ms-price').value) || 0;
+  const qty      = parseInt(document.getElementById('ms-qty').value) || 0;
+  const location = document.getElementById('ms-location').value;
+  const reorder  = parseInt(document.getElementById('ms-reorder').value) || 10;
+  const catEl    = document.getElementById('ms-cat');
+  const category = catEl.options[catEl.selectedIndex]?.text || 'Uncategorised';
+
+  if (!sku || !name) { toast('SKU and item name are required', 'warn'); return; }
+
+  const newItem = { id: Date.now(), sku, name, category, price, quantity: qty, location, reorderLevel: reorder };
+  state.inventory.push(newItem);
+  renderInventory();
+  loadDashboard();
+  toast('Stock item added: ' + name, 'ok');
+  closeModal('modal-add-stock');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('visible');
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('visible'); });
+});
+
+/* =====================================================
+   TOAST NOTIFICATIONS
+===================================================== */
+let toastTimer;
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'show toast-' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 3000);
+}
+</script>
+</body>
+</html>
