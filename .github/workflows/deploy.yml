@@ -1,0 +1,34 @@
+name: Deploy NewNetworkingBackend to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # 1. Serverdagi proyekt papkasiga kirish
+            cd /home/ubuntu/app
+            
+            # 2. GitHub'dan oxirgi kodni tortib olish
+            git pull origin main
+            
+            # 3. Backend va docker fayllar turgan papkaga kirish
+            cd NewNetworkingBackend
+            
+            # 4. Konteynerlarni yangitdan o'chirib, build qilib yoqish
+            # (Sizda fayl nomi nuqta bilan bo'lgani uchun -f flagidan foydalanamiz)
+            docker compose -f docker.compose.yml down
+            docker compose -f docker.compose.yml up -d --build
