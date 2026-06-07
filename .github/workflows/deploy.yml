@@ -19,17 +19,30 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Serverdagi proyekt papkasiga kirish
+            # 1. Serverda Docker Compose bor-yo'qligini tekshirish va yo'q bo'lsa avtomatik o'rnatish
+            if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
+              echo "Docker Compose topilmadi. Tizim uni avtomatik o'rnatmoqda..."
+              sudo apt-get update -y
+              sudo apt-get install -y docker-compose-plugin docker-compose
+            fi
+
+            # 2. Serverda qaysi format (bo'shliq yoki chiziqcha bilan) ishlashini dinamik aniqlash
+            if docker compose version &>/dev/null; then
+              COMPOSE_CMD="sudo docker compose"
+            else
+              COMPOSE_CMD="sudo docker-compose"
+            fi
+
+            # 3. Serverdagi proyekt papkasiga kirish
             cd /home/ubuntu/app
             
-            # 2. GitHub'dagi yangi kodlarni majburlab serverga o'tkazish
+            # 4. GitHub'dan yangi kodlarni majburlab serverga o'tkazish
             git fetch origin main
             git reset --hard origin/main
             
-            # 3. Backend papkasiga kirish
+            # 5. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 4. Sudo orqali docker compose konteynerlarini yangilash
-            # (Sizda fayl nomi nuqta bilan bo'lgani uchun -f flagidan sudo bilan birga foydalanamiz)
-            sudo docker compose -f docker.compose.yml down
-            sudo docker compose -f docker.compose.yml up -d --build
+            # 6. Dinamik aniqlangan buyruq orqali konteynerlarni xatosiz qayta ishga tushirish
+            $COMPOSE_CMD -f docker.compose.yml down
+            $COMPOSE_CMD -f docker.compose.yml up -d --build
