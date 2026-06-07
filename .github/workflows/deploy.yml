@@ -22,13 +22,13 @@ jobs:
             # 1. Serverdagi proyekt papkasiga kirish
             cd /home/ubuntu/app
             
-            # 2. GitHub'dan oxirgi kodni tortib olish
-            git pull origin main
+            # 2. GitHub'dagi yangi tarixni majburlab serverga o'tkazish
+            git fetch origin main
+            git reset --hard origin/main
             
-            # 3. Backend va docker fayllar turgan papkaga kirish
+            # 3. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 4. Konteynerlarni yangitdan o'chirib, build qilib yoqish
-            # (Sizda fayl nomi nuqta bilan bo'lgani uchun -f flagidan foydalanamiz)
+            # 4. Konteynerlarni qayta build qilish
             docker compose -f docker.compose.yml down
             docker compose -f docker.compose.yml up -d --build
