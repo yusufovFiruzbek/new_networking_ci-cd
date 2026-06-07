@@ -19,14 +19,18 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Serverda Docker Compose bor-yo'qligini tekshirish va yo'q bo'lsa avtomatik o'rnatish
+            # 1. Docker Compose bor-yo'qligini tekshirish va yo'q bo'lsa GitHub'dan to'g'ridan-to'g'ri o'rnatish
             if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
-              echo "Docker Compose topilmadi. Tizim uni avtomatik o'rnatmoqda..."
-              sudo apt-get update -y
-              sudo apt-get install -y docker-compose-plugin docker-compose
+              echo "Docker Compose topilmadi. Rasmiy GitHub'dan yuklab olinmoqda..."
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              
+              # 'docker compose' (bo'shliq bilan) buyrug'i ham ishlashi uchun tizimga bog'lash
+              sudo mkdir -p /usr/local/lib/docker/cli-plugins
+              sudo ln -s /usr/local/bin/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
             fi
 
-            # 2. Serverda qaysi format (bo'shliq yoki chiziqcha bilan) ishlashini dinamik aniqlash
+            # 2. Qaysi buyruq aktivligini aniqlash (bo'shliq yoki chiziqcha bilan)
             if docker compose version &>/dev/null; then
               COMPOSE_CMD="sudo docker compose"
             else
@@ -43,6 +47,6 @@ jobs:
             # 5. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 6. Dinamik aniqlangan buyruq orqali konteynerlarni xatosiz qayta ishga tushirish
+            # 6. Konteynerlarni xatosiz qayta ishga tushirish
             $COMPOSE_CMD -f docker.compose.yml down
             $COMPOSE_CMD -f docker.compose.yml up -d --build
