@@ -29,7 +29,6 @@ jobs:
             # 3. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 4. Standart docker-compose yordamida qayta build qilish
-            # (Eski va yangi docker versiyalarida ham xatosiz ishlashi uchun docker-compose ishlatamiz)
-            docker-compose down
-            docker-compose up -d --build
+            # 4. Toza docker compose buyruqlari (ortiqcha flaglar va chiziqchalarsiz)
+            docker compose down
+            docker compose up -d --build
