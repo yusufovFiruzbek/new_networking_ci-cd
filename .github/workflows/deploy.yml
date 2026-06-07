@@ -29,6 +29,7 @@ jobs:
             # 3. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 4. Toza docker compose buyruqlari (ortiqcha flaglar va chiziqchalarsiz)
-            docker compose down
-            docker compose up -d --build
+            # 4. Sudo orqali docker compose konteynerlarini yangilash
+            # (Sizda fayl nomi nuqta bilan bo'lgani uchun -f flagidan sudo bilan birga foydalanamiz)
+            sudo docker compose -f docker.compose.yml down
+            sudo docker compose -f docker.compose.yml up -d --build
