@@ -19,34 +19,39 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Docker Compose bor-yo'qligini tekshirish va yo'q bo'lsa GitHub'dan to'g'ridan-to'g'ri o'rnatish
+            # 1. Agar Swap xotira bo'lmasa, server qotib qolmasligi uchun avtomatik 2GB Swap yaratish
+            if [ $(sudo swapon --show | wc -l) -eq 0 ]; then
+              echo "Swap xotira topilmadi. Server build'da qotmasligi uchun 2GB Swap yaratilmoqda..."
+              sudo fallocate -l 2G /swapfile
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+              echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+            fi
+
+            # 2. Docker Compose o'rnatilganini tekshirish
             if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
-              echo "Docker Compose topilmadi. Rasmiy GitHub'dan yuklab olinmoqda..."
+              echo "Docker Compose yuklab olinmoqda..."
               sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
-              
-              # 'docker compose' (bo'shliq bilan) buyrug'i ham ishlashi uchun tizimga bog'lash
               sudo mkdir -p /usr/local/lib/docker/cli-plugins
               sudo ln -s /usr/local/bin/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
             fi
 
-            # 2. Qaysi buyruq aktivligini aniqlash (bo'shliq yoki chiziqcha bilan)
+            # 3. Buyruq formatini aniqlash
             if docker compose version &>/dev/null; then
               COMPOSE_CMD="sudo docker compose"
             else
               COMPOSE_CMD="sudo docker-compose"
             fi
 
-            # 3. Serverdagi proyekt papkasiga kirish
+            # 4. Proyekt papkasiga kirish va kodlarni yangilash
             cd /home/ubuntu/app
-            
-            # 4. GitHub'dan yangi kodlarni majburlab serverga o'tkazish
             git fetch origin main
             git reset --hard origin/main
             
-            # 5. Backend papkasiga kirish
             cd NewNetworkingBackend
             
-            # 6. Konteynerlarni xatosiz qayta ishga tushirish
+            # 5. Konteynerlarni qayta build qilish
             $COMPOSE_CMD -f docker.compose.yml down
             $COMPOSE_CMD -f docker.compose.yml up -d --build
